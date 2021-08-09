@@ -61,8 +61,31 @@ async function updateObservationList() {
         updateButton.setAttribute("type", "button");
         updateButton.setAttribute("class", "btn btn-info m-auto");
         updateButton.setAttribute("data-bs-toggle", "modal");
-        updateButton.setAttribute("data-bs-target", "#updateObservationModal")
+        updateButton.setAttribute("data-bs-target", "#updateObservationModal");
         updateButton.textContent = "Update";
+
+        /**
+         * Transfers all object values unto input fields in the Update Observation modal,
+         * thus making the values accessible globally, as long as the user is within the Update Observation modal window
+         */
+
+        updateButton.onclick = function() {
+            let targetObservationId = document.getElementById("updateObservationId");
+            targetObservationId.setAttribute("value", observation.observationId);
+            let targetStationId = document.getElementById("updateStationId");
+            targetStationId.setAttribute("value", observation.station.stationId);
+            let targetStationCode = document.getElementById("updateStationCode");
+            targetStationCode.setAttribute("value", observation.station.stationCode);
+            let targetObservationDateTime = document.getElementById("updateObservationDateTime");
+            targetObservationDateTime.removeAttribute("value");
+            targetObservationDateTime.setAttribute("value", observation.observationDateTime);
+            let targetRegistrationDateTime = document.getElementById("updateRegistrationDateTime");
+            targetRegistrationDateTime.removeAttribute("value");
+            targetRegistrationDateTime.setAttribute("value", observation.registrationDateTime);
+            let targetUpdateTemperature = document.getElementById("updateTemperature");
+            targetUpdateTemperature.setAttribute("value", observation.temperature);
+        }
+
         updateObservationContainer.appendChild(updateButton);
 
         const deleteObservationContainer = document.createElement("td");
@@ -72,8 +95,14 @@ async function updateObservationList() {
         const deleteButton = document.createElement("button");
         deleteButton.setAttribute("type", "button");
         deleteButton.setAttribute("class", "btn btn-danger m-auto");
-        deleteButton.setAttribute("onclick", "//TO DO//");
+        deleteButton.setAttribute("data-bs-toggle", "modal");
+        deleteButton.setAttribute("data-bs-target", "#deleteObservationModal");
         deleteButton.textContent = "Delete";
+
+        deleteButton.onclick = function() {
+            let targetDeleteObservationId = document.getElementById("deleteObservationId");
+            targetDeleteObservationId.setAttribute("value", observation.observationId);
+        }
         deleteObservationContainer.appendChild(deleteButton);
     });
 }
@@ -84,7 +113,7 @@ async function updateObservationList() {
 
 function createObservation() {
 
-    const observationObject = {
+    const createObservationObject = {
         "observationDateTime": document.getElementById("inputObservationDateTime").value,
         "registrationDateTime": document.getElementById("inputRegistrationDateTime").value,
         "temperature": document.getElementById("inputTemperature").value,
@@ -93,19 +122,20 @@ function createObservation() {
         }
     }
 
-    const observationBody = JSON.stringify(observationObject);
+    const createObservationBody = JSON.stringify(createObservationObject);
     const insertObservationURL = "/api/create-observation";
 
-    const requestObject = {
+    const createRequestObject = {
         headers:{
             'Content-Type':'application/json',
         },
         method:'POST',
-        body: observationBody
+        body: createObservationBody
     }
 
-    fetch(insertObservationURL, requestObject)
+    fetch(insertObservationURL, createRequestObject)
         .then(response => response.json())
+        .then(() => {location.reload()})
 }
 
 /**
@@ -113,8 +143,46 @@ function createObservation() {
  */
 
 function updateObservation() {
-    const updateStationCode = document.getElementById("stationCode").value;
 
-    console.log(updateStationCode);
+    const updateObservationObject = {
+        "observationId": document.getElementById("updateObservationId").value,
+        "observationDateTime": document.getElementById("updateObservationDateTime").value,
+        "registrationDateTime": document.getElementById("updateRegistrationDateTime").value,
+        "temperature": document.getElementById("updateTemperature").value,
+        "station": {
+            "stationId": document.getElementById("updateStationId").value,
+            "stationCode": document.getElementById("updateStationCode").value
+        }
+    }
+
+    const updateObservationBody = JSON.stringify(updateObservationObject);
+    const updateObservationURL = "/api/update-observation/" + document.getElementById("updateObservationId").value;
+
+    const updateRequestObject = {
+        headers:{
+            'Content-Type':'application/json',
+        },
+        method:'PUT',
+        body: updateObservationBody
+    }
+
+    fetch(updateObservationURL, updateRequestObject)
+        .then(response => response.json())
+        .then(() => {location.reload()})
+}
+
+/**
+ * Allows the user to delete an observation through the Delete Observation modal
+ */
+
+function deleteObservation() {
+    const deleteObservationURL = "/api/delete-observation/" + document.getElementById("deleteObservationId").value;
+
+    const deleteRequestObject = {
+        method:'DELETE'
+    }
+
+    fetch(deleteObservationURL, deleteRequestObject)
+        .then(() => {location.reload()})
 }
 

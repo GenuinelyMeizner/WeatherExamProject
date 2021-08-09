@@ -62,9 +62,19 @@
             <div class="modal-body">
                 <form>
                     <div class="mb-3">
+                        <label for="updateObservationId" class="form-label">Observation Id</label>
+                        <input type="number" class="form-control " id="updateObservationId" disabled>
+                        <div id="updateObservationIdHelp" class="form-text">This option is disabled to uphold data integrity</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="updateStationId" class="form-label">Station Code</label>
+                        <input type="number" class="form-control " id="updateStationId" disabled>
+                        <div id="updateStationIdHelp" class="form-text">This option is disabled to uphold data integrity</div>
+                    </div>
+                    <div class="mb-3">
                         <label for="updateStationCode" class="form-label">Station Code</label>
-                        <input type="number" class="form-control " id="updateStationCode">
-                        <div id="updateStationCodeHelp" class="form-text">The code for the station, where the observation was made</div>
+                        <input type="number" class="form-control " id="updateStationCode" disabled>
+                        <div id="updateStationCodeHelp" class="form-text">This option is disabled to uphold data integrity</div>
                     </div>
                     <div class="mb-3">
                         <label for="updateObservationDateTime" class="form-label">Date Of Observation</label>
@@ -86,6 +96,32 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary" onclick="updateObservation()">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Delete Observation Modal-->
+<div class="modal fade" id="deleteObservationModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="Delete Observation">Delete Observation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="deleteObservationId" class="form-label">Observation ID</label>
+                        <input type="number" class="form-control " id="deleteObservationId" disabled>
+                        <div id="deleteObservationIdHelp" class="form-text">The assigned ID of the Observation</div>
+                    </div>
+                    <p class="text-warning">Are you sure you want to delete the Observation?</p>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" onclick="deleteObservation()">Delete</button>
             </div>
         </div>
     </div>
