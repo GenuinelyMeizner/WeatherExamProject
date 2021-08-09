@@ -1,7 +1,9 @@
 package com.example.weatherexamproject.services;
 
 import com.example.weatherexamproject.models.Observation;
+import com.example.weatherexamproject.models.Station;
 import com.example.weatherexamproject.repositories.ObservationRepository;
+import com.example.weatherexamproject.repositories.StationRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

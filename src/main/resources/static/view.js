@@ -1,8 +1,24 @@
 updateObservationList()
+updateStationList()
 
 /**
  * Fetches a list of all observations and displays them dynamically on index.html
  */
+
+async function updateStationList() {
+    const url = "api/get-all-stations"
+    const response = await fetch(url);
+    const data = await response.json();
+
+    const inputStationIdDropDown = document.getElementById("inputStationId")
+
+    data.forEach(station => {
+        const stationOption = document.createElement("option");
+        stationOption.setAttribute("value", station.stationId);
+        stationOption.textContent = station.stationCode + "-" + station.stationId;
+        inputStationIdDropDown.appendChild(stationOption);
+    })
+}
 
 async function updateObservationList() {
     const url = "/api/get-all-observations";
@@ -118,7 +134,7 @@ function createObservation() {
         "registrationDateTime": document.getElementById("inputRegistrationDateTime").value,
         "temperature": document.getElementById("inputTemperature").value,
         "station": {
-            "stationCode": document.getElementById("inputStationCode").value
+            "stationId": document.getElementById("inputStationId").value
         }
     }
 
@@ -134,7 +150,6 @@ function createObservation() {
     }
 
     fetch(insertObservationURL, createRequestObject)
-        .then(response => response.json())
         .then(() => {location.reload()})
 }
 

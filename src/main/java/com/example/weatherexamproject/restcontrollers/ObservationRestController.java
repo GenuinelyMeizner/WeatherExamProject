@@ -18,6 +18,7 @@ public class ObservationRestController {
 
     private final ObservationService observationService;
 
+
     @PostMapping(value = "/create-observation", consumes = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
     public void postObservation(@RequestBody Observation observation) {
