@@ -20,7 +20,7 @@ public class Observation {
     private LocalDateTime registrationDateTime;
     private double temperature;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "stationId")
     private Station station;
 

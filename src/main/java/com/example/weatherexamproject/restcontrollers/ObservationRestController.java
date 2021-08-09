@@ -1,6 +1,8 @@
 package com.example.weatherexamproject.restcontrollers;
 
 import com.example.weatherexamproject.models.Observation;
+import com.example.weatherexamproject.models.Station;
+import com.example.weatherexamproject.repositories.StationRepository;
 import com.example.weatherexamproject.services.ObservationService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,14 +20,14 @@ public class ObservationRestController {
 
     @PostMapping(value = "/create-observation", consumes = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
-    public Observation postObservation(@RequestBody Observation observation) {
-        return observationService.insertUpdateObservation(observation);
+    public void postObservation(@RequestBody Observation observation) {
+        observationService.insertUpdateObservation(observation);
     }
 
     @PutMapping(value = "/update-observation/{observationId}")
     @ResponseStatus(HttpStatus.OK)
-    public Observation putObservation(@RequestBody Observation observation) {
-        return observationService.insertUpdateObservation(observation);
+    public void putObservation(@RequestBody Observation observation) {
+        observationService.insertUpdateObservation(observation);
     }
 
     @DeleteMapping(value = "/delete-observation/{observationId}")

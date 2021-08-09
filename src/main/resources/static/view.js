@@ -167,7 +167,6 @@ function updateObservation() {
     }
 
     fetch(updateObservationURL, updateRequestObject)
-        .then(response => response.json())
         .then(() => {location.reload()})
 }
 

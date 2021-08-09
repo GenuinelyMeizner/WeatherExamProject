@@ -12,8 +12,8 @@ import java.util.List;
 public class ObservationService {
     private final ObservationRepository observationRepository;
 
-    public Observation insertUpdateObservation(Observation observation) {
-        return observationRepository.save(observation);
+    public void insertUpdateObservation(Observation observation) {
+        observationRepository.save(observation);
     }
 
     public void deleteObservation(Long observationId) {
