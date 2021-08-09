@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="/webjars/bootstrap/5.0.1/css/bootstrap.css" rel="stylesheet">
+    <script src="/webjars/bootstrap/5.0.1/js/bootstrap.bundle.js"></script>
+    <script src="/webjars/popper.js/2.9.2/umd/popper.js"></script>
+    <script type="text/javascript" th:src="@{/view.js}" defer></script>
+</head>
+
+<body>
+
+<!--Create Observation Modal-->
+<div class="modal fade" id="createObservationModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="Create New Observation">Create Observation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="inputStationCode" class="form-label">Station Code</label>
+                        <input type="number" class="form-control " id="inputStationCode">
+                        <div id="stationCodeHelp" class="form-text">The code for the station, where the observation was made</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="inputObservationDateTime" class="form-label">Date Of Observation</label>
+                        <input type="datetime-local" class="form-control" id="inputObservationDateTime">
+                        <div id="observationDateTimeHelp" class="form-text">The Year-Month-Day Hour-Minute of the observation</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="inputRegistrationDateTime" class="form-label">Date Of Registration</label>
+                        <input type="datetime-local" class="form-control" id="inputRegistrationDateTime">
+                        <div id="registrationDateTimeHelp" class="form-text">The Year-Month-Day Hour-Minute of your registration</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="inputTemperature" class="form-label">Observed Temperature</label>
+                        <input type="number" step=".01" class="form-control" id="inputTemperature">
+                        <div id="temperatureHelp" class="form-text">The temperature in Celsius within two decimal places</div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="createObservation()">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Update Observation Modal-->
+<div class="modal fade" id="updateObservationModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="Update Observation">Update Observation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="updateStationCode" class="form-label">Station Code</label>
+                        <input type="number" class="form-control " id="updateStationCode">
+                        <div id="updateStationCodeHelp" class="form-text">The code for the station, where the observation was made</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="updateObservationDateTime" class="form-label">Date Of Observation</label>
+                        <input type="datetime-local" class="form-control" id="updateObservationDateTime">
+                        <div id="updateObservationDateTimeHelp" class="form-text">The Year-Month-Day Hour-Minute of the observation</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="updateRegistrationDateTime" class="form-label">Date Of Registration</label>
+                        <input type="datetime-local" class="form-control" id="updateRegistrationDateTime">
+                        <div id="updateRegistrationDateTimeHelp" class="form-text">The Year-Month-Day Hour-Minute of your registration</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="updateTemperature" class="form-label">Observed Temperature</label>
+                        <input type="number" step=".01" class="form-control" id="updateTemperature">
+                        <div id="updateTemperatureHelp" class="form-text">The temperature in Celsius within two decimal places</div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="updateObservation()">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Nav Bar-->
+<nav class="navbar navbar-expand bg-dark mb-4">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                    <button class="nav-link link-light btn-dark">Home</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link link-light btn-dark" data-bs-toggle="modal" data-bs-target="#createObservationModal">Create Observation</button>
+            </li>
+        </ul>
+</nav>
+
+<!--Body-->
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <table class="table table-dark">
+                <thead>
+                <tr>
+                    <th scope="col">Observation ID</th>
+                    <th scope="col">Station ID</th>
+                    <th scope="col">Station Code</th>
+                    <th scope="col">Observed</th>
+                    <th scope="col">Registered</th>
+                    <th scope="col">Temperature</th>
+                    <th scope="col">Heat Wave</th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody id="table-body">
+                <!--Dynamically Created Code Here-->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>
