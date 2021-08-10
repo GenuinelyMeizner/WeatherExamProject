@@ -1,8 +1,16 @@
 updateObservationList()
 updateStationList()
 
+function removeElements() {
+    const removalService = document.querySelectorAll("#remove")
+    removalService.forEach(element => {
+        element.remove();
+    })
+}
+
 /**
- * Fetches a list of all observations and displays them dynamically on index.html
+ * Fetches a list of all stations and dynamically creates options for the station dropdown menu
+ * @returns {Promise<void>}
  */
 
 async function updateStationList() {
@@ -11,6 +19,7 @@ async function updateStationList() {
     const data = await response.json();
 
     const inputStationIdDropDown = document.getElementById("inputStationId")
+    const stationSelectorDropDown = document.getElementById("stationSelector")
 
     data.forEach(station => {
         const stationOption = document.createElement("option");
@@ -18,7 +27,18 @@ async function updateStationList() {
         stationOption.textContent = station.stationCode + "-" + station.stationId;
         inputStationIdDropDown.appendChild(stationOption);
     })
+
+    data.forEach(station => {
+        const stationOption = document.createElement("option");
+        stationOption.setAttribute("value", station.stationId);
+        stationOption.textContent = station.stationCode + "-" + station.stationId;
+        stationSelectorDropDown.appendChild(stationOption);
+    })
 }
+
+/**
+ * Fetches a list of all observations and displays them dynamically on index.html
+ */
 
 async function updateObservationList() {
     const url = "/api/get-all-observations";
@@ -26,100 +46,228 @@ async function updateObservationList() {
     const data = await response.json();
 
     const tableBody = document.getElementById("table-body");
+    const averageTemperature = document.getElementById("averageTemperature");
+
+    const selector = document.getElementById("stationSelector").value;
+
+    let sum = 0;
+    let iteration = 0;
+
+    removeElements();
 
     data.forEach(observation => {
+        if(selector == 0) {
+            const tableRow = document.createElement("tr");
+            tableRow.setAttribute("id", "remove");
+            tableBody.appendChild(tableRow);
 
-        const tableRow = document.createElement("tr");
-        tableBody.appendChild(tableRow);
+            const observationId = document.createElement("td");
+            observationId.textContent = observation.observationId;
+            tableRow.appendChild(observationId);
 
-        const observationId = document.createElement("td");
-        observationId.textContent = observation.observationId;
-        tableRow.appendChild(observationId);
+            const stationId = document.createElement("td");
+            stationId.textContent = observation.station.stationId;
+            tableRow.appendChild(stationId);
 
-        const stationId = document.createElement("td");
-        stationId.textContent = observation.station.stationId;
-        tableRow.appendChild(stationId);
+            const stationCode = document.createElement("td");
+            stationCode.textContent = observation.station.stationCode;
+            stationCode.setAttribute("id", "stationCode");
+            tableRow.appendChild(stationCode);
 
-        const stationCode = document.createElement("td");
-        stationCode.textContent = observation.station.stationCode;
-        stationCode.setAttribute("id", "stationCode");
-        tableRow.appendChild(stationCode);
+            const observationDateTime = document.createElement("td");
+            observationDateTime.textContent = observation.observationDateTime;
+            tableRow.appendChild(observationDateTime);
 
-        const observationDateTime = document.createElement("td");
-        observationDateTime.textContent = observation.observationDateTime;
-        tableRow.appendChild(observationDateTime);
+            const registrationDateTime = document.createElement("td");
+            registrationDateTime.textContent = observation.registrationDateTime;
+            tableRow.appendChild(registrationDateTime);
 
-        const registrationDateTime = document.createElement("td");
-        registrationDateTime.textContent = observation.registrationDateTime;
-        tableRow.appendChild(registrationDateTime);
+            const temperature = document.createElement("td");
+            temperature.textContent = observation.temperature;
+            tableRow.appendChild(temperature);
 
-        const temperature = document.createElement("td");
-        temperature.textContent = observation.temperature;
-        tableRow.appendChild(temperature);
+            const heatwave = document.createElement("td");
+            tableRow.appendChild(heatwave);
 
-        const heatwave = document.createElement("td");
-        tableRow.appendChild(heatwave);
+            const heatwaveCheckbox = document.createElement("input");
+            heatwaveCheckbox.setAttribute("class", "form-check input m-auto");
+            heatwaveCheckbox.setAttribute("type", "checkbox");
+            if(observation.temperature >= 25) {
+                heatwaveCheckbox.checked = true;
+            }
+            heatwaveCheckbox.disabled = true;
+            heatwave.appendChild(heatwaveCheckbox);
 
-        const heatwaveCheckbox = document.createElement("input");
-        heatwaveCheckbox.setAttribute("class", "form-check input m-auto");
-        heatwaveCheckbox.setAttribute("type", "checkbox");
-        if(observation.temperature >= 25) {
-            heatwaveCheckbox.checked = true;
+            const updateObservationContainer = document.createElement("td");
+            updateObservationContainer.setAttribute("class", "text-center");
+            tableRow.appendChild(updateObservationContainer);
+
+            const updateButton = document.createElement("button");
+            updateButton.setAttribute("type", "button");
+            updateButton.setAttribute("class", "btn btn-info m-auto");
+            updateButton.setAttribute("data-bs-toggle", "modal");
+            updateButton.setAttribute("data-bs-target", "#updateObservationModal");
+            updateButton.textContent = "Update";
+
+            /**
+             * Transfers all object values unto input fields in the Update Observation modal,
+             * thus making the values accessible globally, as long as the user is within the Update Observation modal window
+             */
+
+            updateButton.onclick = function() {
+                let targetObservationId = document.getElementById("updateObservationId");
+                targetObservationId.setAttribute("value", observation.observationId);
+                let targetStationId = document.getElementById("updateStationId");
+                targetStationId.setAttribute("value", observation.station.stationId);
+                let targetStationCode = document.getElementById("updateStationCode");
+                targetStationCode.setAttribute("value", observation.station.stationCode);
+                let targetObservationDateTime = document.getElementById("updateObservationDateTime");
+                targetObservationDateTime.removeAttribute("value");
+                targetObservationDateTime.setAttribute("value", observation.observationDateTime);
+                let targetRegistrationDateTime = document.getElementById("updateRegistrationDateTime");
+                targetRegistrationDateTime.removeAttribute("value");
+                targetRegistrationDateTime.setAttribute("value", observation.registrationDateTime);
+                let targetUpdateTemperature = document.getElementById("updateTemperature");
+                targetUpdateTemperature.setAttribute("value", observation.temperature);
+            }
+
+            updateObservationContainer.appendChild(updateButton);
+
+            const deleteObservationContainer = document.createElement("td");
+            deleteObservationContainer.setAttribute("class", "text-center");
+            tableRow.appendChild(deleteObservationContainer);
+
+            const deleteButton = document.createElement("button");
+            deleteButton.setAttribute("type", "button");
+            deleteButton.setAttribute("class", "btn btn-danger m-auto");
+            deleteButton.setAttribute("data-bs-toggle", "modal");
+            deleteButton.setAttribute("data-bs-target", "#deleteObservationModal");
+            deleteButton.textContent = "Delete";
+
+            deleteButton.onclick = function() {
+                let targetDeleteObservationId = document.getElementById("deleteObservationId");
+                targetDeleteObservationId.setAttribute("value", observation.observationId);
+            }
+            deleteObservationContainer.appendChild(deleteButton);
+
+            /**
+             * Sums temperature of all selected observations and divides it by the number of iterations,
+             * thereby getting the average temperature
+             */
+
+            sum += observation.temperature;
+            iteration++;
+            console.log(sum)
+            console.log(iteration)
+
+            averageTemperature.textContent = (sum /= iteration).toString();
         }
-        heatwaveCheckbox.disabled = true;
-        heatwave.appendChild(heatwaveCheckbox);
+        else if(selector == observation.station.stationId) {
+            const tableRow = document.createElement("tr");
+            tableRow.setAttribute("id", "remove");
+            tableBody.appendChild(tableRow);
 
-        const updateObservationContainer = document.createElement("td");
-        updateObservationContainer.setAttribute("class", "text-center");
-        tableRow.appendChild(updateObservationContainer);
+            const observationId = document.createElement("td");
+            observationId.textContent = observation.observationId;
+            tableRow.appendChild(observationId);
 
-        const updateButton = document.createElement("button");
-        updateButton.setAttribute("type", "button");
-        updateButton.setAttribute("class", "btn btn-info m-auto");
-        updateButton.setAttribute("data-bs-toggle", "modal");
-        updateButton.setAttribute("data-bs-target", "#updateObservationModal");
-        updateButton.textContent = "Update";
+            const stationId = document.createElement("td");
+            stationId.textContent = observation.station.stationId;
+            tableRow.appendChild(stationId);
 
-        /**
-         * Transfers all object values unto input fields in the Update Observation modal,
-         * thus making the values accessible globally, as long as the user is within the Update Observation modal window
-         */
+            const stationCode = document.createElement("td");
+            stationCode.textContent = observation.station.stationCode;
+            stationCode.setAttribute("id", "stationCode");
+            tableRow.appendChild(stationCode);
 
-        updateButton.onclick = function() {
-            let targetObservationId = document.getElementById("updateObservationId");
-            targetObservationId.setAttribute("value", observation.observationId);
-            let targetStationId = document.getElementById("updateStationId");
-            targetStationId.setAttribute("value", observation.station.stationId);
-            let targetStationCode = document.getElementById("updateStationCode");
-            targetStationCode.setAttribute("value", observation.station.stationCode);
-            let targetObservationDateTime = document.getElementById("updateObservationDateTime");
-            targetObservationDateTime.removeAttribute("value");
-            targetObservationDateTime.setAttribute("value", observation.observationDateTime);
-            let targetRegistrationDateTime = document.getElementById("updateRegistrationDateTime");
-            targetRegistrationDateTime.removeAttribute("value");
-            targetRegistrationDateTime.setAttribute("value", observation.registrationDateTime);
-            let targetUpdateTemperature = document.getElementById("updateTemperature");
-            targetUpdateTemperature.setAttribute("value", observation.temperature);
+            const observationDateTime = document.createElement("td");
+            observationDateTime.textContent = observation.observationDateTime;
+            tableRow.appendChild(observationDateTime);
+
+            const registrationDateTime = document.createElement("td");
+            registrationDateTime.textContent = observation.registrationDateTime;
+            tableRow.appendChild(registrationDateTime);
+
+            const temperature = document.createElement("td");
+            temperature.textContent = observation.temperature;
+            tableRow.appendChild(temperature);
+
+            const heatwave = document.createElement("td");
+            tableRow.appendChild(heatwave);
+
+            const heatwaveCheckbox = document.createElement("input");
+            heatwaveCheckbox.setAttribute("class", "form-check input m-auto");
+            heatwaveCheckbox.setAttribute("type", "checkbox");
+            if(observation.temperature >= 25) {
+                heatwaveCheckbox.checked = true;
+            }
+            heatwaveCheckbox.disabled = true;
+            heatwave.appendChild(heatwaveCheckbox);
+
+            const updateObservationContainer = document.createElement("td");
+            updateObservationContainer.setAttribute("class", "text-center");
+            tableRow.appendChild(updateObservationContainer);
+
+            const updateButton = document.createElement("button");
+            updateButton.setAttribute("type", "button");
+            updateButton.setAttribute("class", "btn btn-info m-auto");
+            updateButton.setAttribute("data-bs-toggle", "modal");
+            updateButton.setAttribute("data-bs-target", "#updateObservationModal");
+            updateButton.textContent = "Update";
+
+            /**
+             * Transfers all object values unto input fields in the Update Observation modal,
+             * thus making the values accessible globally, as long as the user is within the Update Observation modal window
+             */
+
+            updateButton.onclick = function() {
+                let targetObservationId = document.getElementById("updateObservationId");
+                targetObservationId.setAttribute("value", observation.observationId);
+                let targetStationId = document.getElementById("updateStationId");
+                targetStationId.setAttribute("value", observation.station.stationId);
+                let targetStationCode = document.getElementById("updateStationCode");
+                targetStationCode.setAttribute("value", observation.station.stationCode);
+                let targetObservationDateTime = document.getElementById("updateObservationDateTime");
+                targetObservationDateTime.removeAttribute("value");
+                targetObservationDateTime.setAttribute("value", observation.observationDateTime);
+                let targetRegistrationDateTime = document.getElementById("updateRegistrationDateTime");
+                targetRegistrationDateTime.removeAttribute("value");
+                targetRegistrationDateTime.setAttribute("value", observation.registrationDateTime);
+                let targetUpdateTemperature = document.getElementById("updateTemperature");
+                targetUpdateTemperature.setAttribute("value", observation.temperature);
+            }
+
+            updateObservationContainer.appendChild(updateButton);
+
+            const deleteObservationContainer = document.createElement("td");
+            deleteObservationContainer.setAttribute("class", "text-center");
+            tableRow.appendChild(deleteObservationContainer);
+
+            const deleteButton = document.createElement("button");
+            deleteButton.setAttribute("type", "button");
+            deleteButton.setAttribute("class", "btn btn-danger m-auto");
+            deleteButton.setAttribute("data-bs-toggle", "modal");
+            deleteButton.setAttribute("data-bs-target", "#deleteObservationModal");
+            deleteButton.textContent = "Delete";
+
+            deleteButton.onclick = function() {
+                let targetDeleteObservationId = document.getElementById("deleteObservationId");
+                targetDeleteObservationId.setAttribute("value", observation.observationId);
+            }
+            deleteObservationContainer.appendChild(deleteButton);
+
+            /**
+             * Sums temperature of all selected observations and divides it by the number of iterations,
+             * thereby getting the average temperature
+             */
+
+            sum += observation.temperature;
+            iteration++;
+            console.log(sum)
+            console.log(iteration)
+
+            averageTemperature.textContent = (sum /= iteration).toString();
         }
-
-        updateObservationContainer.appendChild(updateButton);
-
-        const deleteObservationContainer = document.createElement("td");
-        deleteObservationContainer.setAttribute("class", "text-center");
-        tableRow.appendChild(deleteObservationContainer);
-
-        const deleteButton = document.createElement("button");
-        deleteButton.setAttribute("type", "button");
-        deleteButton.setAttribute("class", "btn btn-danger m-auto");
-        deleteButton.setAttribute("data-bs-toggle", "modal");
-        deleteButton.setAttribute("data-bs-target", "#deleteObservationModal");
-        deleteButton.textContent = "Delete";
-
-        deleteButton.onclick = function() {
-            let targetDeleteObservationId = document.getElementById("deleteObservationId");
-            targetDeleteObservationId.setAttribute("value", observation.observationId);
-        }
-        deleteObservationContainer.appendChild(deleteButton);
     });
 }
 
@@ -199,4 +347,3 @@ function deleteObservation() {
     fetch(deleteObservationURL, deleteRequestObject)
         .then(() => {location.reload()})
 }
-
