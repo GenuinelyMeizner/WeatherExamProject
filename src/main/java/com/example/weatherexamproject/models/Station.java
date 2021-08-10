@@ -1,7 +1,6 @@
 package com.example.weatherexamproject.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import lombok.Generated;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

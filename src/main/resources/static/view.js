@@ -57,6 +57,17 @@ async function updateObservationList() {
 
     data.forEach(observation => {
         if(selector == 0) {
+
+            /**
+             * Sums temperature of all selected observations and divides it by the number of iterations,
+             * thereby getting the average temperature
+             */
+
+            sum += observation.temperature;
+            iteration++;
+
+            averageTemperature.textContent = (sum /= iteration).toString();
+
             const tableRow = document.createElement("tr");
             tableRow.setAttribute("id", "remove");
             tableBody.appendChild(tableRow);
@@ -149,21 +160,18 @@ async function updateObservationList() {
                 targetDeleteObservationId.setAttribute("value", observation.observationId);
             }
             deleteObservationContainer.appendChild(deleteButton);
-
-            /**
-             * Sums temperature of all selected observations and divides it by the number of iterations,
-             * thereby getting the average temperature
-             */
-
-            sum += observation.temperature;
-            iteration++;
-            console.log(sum)
-            console.log(iteration)
-            console.log(sum /= iteration)
-
-            averageTemperature.textContent = (sum /= iteration).toString();
         }
         else if(selector == observation.station.stationId) {
+
+            /**
+             * Sums temperature of all selected observations and divides it by the number of iterations,
+             * thereby getting the average temperature
+             */
+
+            sum += observation.temperature;
+            iteration++;
+
+            averageTemperature.textContent = (sum /= iteration).toString();
             const tableRow = document.createElement("tr");
             tableRow.setAttribute("id", "remove");
             tableBody.appendChild(tableRow);
@@ -256,18 +264,6 @@ async function updateObservationList() {
                 targetDeleteObservationId.setAttribute("value", observation.observationId);
             }
             deleteObservationContainer.appendChild(deleteButton);
-
-            /**
-             * Sums temperature of all selected observations and divides it by the number of iterations,
-             * thereby getting the average temperature
-             */
-            sum += observation.temperature;
-            iteration++;
-            console.log(sum)
-            console.log(iteration)
-            console.log(sum /= iteration)
-
-            averageTemperature.textContent = (sum /= iteration).toString();
         }
     });
 }

@@ -1,8 +1,6 @@
 package com.example.weatherexamproject.restcontrollers;
 
 import com.example.weatherexamproject.models.Observation;
-import com.example.weatherexamproject.models.Station;
-import com.example.weatherexamproject.repositories.StationRepository;
 import com.example.weatherexamproject.services.ObservationService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,7 +15,6 @@ import java.util.List;
 public class ObservationRestController {
 
     private final ObservationService observationService;
-
 
     @PostMapping(value = "/create-observation", consumes = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
