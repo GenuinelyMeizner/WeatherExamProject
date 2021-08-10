@@ -159,6 +159,7 @@ async function updateObservationList() {
             iteration++;
             console.log(sum)
             console.log(iteration)
+            console.log(sum /= iteration)
 
             averageTemperature.textContent = (sum /= iteration).toString();
         }
@@ -260,11 +261,11 @@ async function updateObservationList() {
              * Sums temperature of all selected observations and divides it by the number of iterations,
              * thereby getting the average temperature
              */
-
             sum += observation.temperature;
             iteration++;
             console.log(sum)
             console.log(iteration)
+            console.log(sum /= iteration)
 
             averageTemperature.textContent = (sum /= iteration).toString();
         }
